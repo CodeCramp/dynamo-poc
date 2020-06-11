@@ -1,0 +1,10 @@
+amazon:
+  access:
+    key: mohit
+    secret-key: mohit
+  region:
+    static: us-east-1
+  end-point:
+    url: test
+server:
+  port: 9001
