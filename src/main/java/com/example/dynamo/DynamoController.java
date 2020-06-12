@@ -1,66 +1,65 @@
 package com.example.dynamo;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.dynamodbv2.*;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.CreateTableResult;
-import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
-import com.example.dynamo.model.Student;
+import com.amazonaws.services.dynamodbv2.model.PutItemResult;
+import com.example.dynamo.bean.Student;
+import com.example.dynamo.repo.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Iterator;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
 
 @RestController
 @RequestMapping("/dynamo")
 public class DynamoController {
 
-    private static final AWSCredentials AWS_CREDENTIALS;
-    private static final AmazonDynamoDB DYNAMO_CLIENT;
+    @Autowired
+    private StudentRepository studentRepo;
 
-    static {
-        // Your accesskey and secretkey
-        AWS_CREDENTIALS = new BasicAWSCredentials(
-                "mohit",
-                "mohit"
-        );
-
-        DYNAMO_CLIENT = AmazonDynamoDBClientBuilder.standard()
-                .withCredentials(new AWSStaticCredentialsProvider(AWS_CREDENTIALS))
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:9090", "us-east-1"))
-                .build();
-
-    }
 
     @PostMapping("/table/{tableName}")
     public CreateTableResult createTable(
             @PathVariable String tableName) {
-        DynamoDBMapper mapper = new DynamoDBMapper(DYNAMO_CLIENT);
-        CreateTableRequest req = mapper.generateCreateTableRequest(Student.class);
-        req.setTableName(tableName);
-        // Table provision throughput is still required since it cannot be specified in your POJO
-        req.setProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
-        // Fire off the CreateTableRequest using the low-level client
-        return DYNAMO_CLIENT.createTable(req);
+        return studentRepo.createTable(tableName);
+    }
+
+    @PostMapping("/students")
+    public void insert(
+            @RequestBody Student student) throws IOException {
+        studentRepo.insert(student);
+    }
+
+    @GetMapping("/students/{studentId}/lastName/{lastName}")
+    public Student get(
+            @PathVariable String studentId,
+            @PathVariable String lastName) throws IOException {
+        return studentRepo.get(studentId, lastName);
+    }
+
+    @GetMapping("/students/lastName/{lastName}")
+    public String getAll(
+            @PathVariable String lastName) throws IOException {
+        try {
+            studentRepo.get(lastName);
+        } catch (Exception e){}
+
+        return "AmazonDynamoDBException: Query condition missed key schema element." +
+                "It means - You're trying to run a query using a condition that does not include the primary key." +
+                "Read - https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html";
+    }
+
+    @PutMapping("/students")
+    public Student update(
+            @RequestBody Student student) throws IOException {
+        return studentRepo.update(student);
+    }
+
+    @DeleteMapping("/students/{studentId}/lastName/{lastName}")
+    public void delete(
+            @PathVariable String studentId,
+            @PathVariable String lastName) throws IOException {
+        studentRepo.delete(studentId, lastName);
     }
 }

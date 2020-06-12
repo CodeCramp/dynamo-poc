@@ -1,14 +1,17 @@
-package com.example.dynamo.model;
+package com.example.dynamo.bean;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import com.example.dynamo.model.Address;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @DynamoDBTable(tableName = "student")
 public class Student implements Serializable {
 

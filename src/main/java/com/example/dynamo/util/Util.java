@@ -1,7 +1,7 @@
 package com.example.dynamo.util;
 
-import com.example.dynamo.model.Address;
-import com.example.dynamo.model.Student;
+import com.example.dynamo.bean.Address;
+import com.example.dynamo.bean.Student;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
