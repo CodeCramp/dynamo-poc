@@ -18,9 +18,9 @@ import java.util.Map;
 
 @Repository
 @Slf4j
-public class DynamoDbRepository {
+public class DynamoRepository {
 
-	@Autowired
+//	@Autowired
 	private DynamoDBMapper mapper;
 
 	public void insertIntoDynamoDB(Student student) {

@@ -13,27 +13,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DynamoConfig {
 
-	@Value("${amazon.access.key}")
-	private String awsAccessKey;
+//	@Value("${amazon.access.key}")
+//	private String awsAccessKey;
+//
+//	@Value("${amazon.access.secret-key}")
+//	private String awsSecretKey;
+//
+//	@Value("${amazon.region}")
+//	private String awsRegion;
+//
+//	@Value("${amazon.end-point.url}")
+//	private String awsDynamoDBEndPoint;
 
-	@Value("${amazon.access.secret-key}")
-	private String awsSecretKey;
+//	@Bean
+//	public DynamoDBMapper mapper() {
+//		return new DynamoDBMapper(amazonDynamoDBConfig());
+//	}
 
-	@Value("${amazon.region}")
-	private String awsRegion;
-
-	@Value("${amazon.end-point.url}")
-	private String awsDynamoDBEndPoint;
-
-	@Bean
-	public DynamoDBMapper mapper() {
-		return new DynamoDBMapper(amazonDynamoDBConfig());
-	}
-
-	public AmazonDynamoDB amazonDynamoDBConfig() {
-		return AmazonDynamoDBClientBuilder.standard()
-				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsDynamoDBEndPoint, awsRegion))
-				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsAccessKey, awsSecretKey)))
-				.build();
-	}
+//	public AmazonDynamoDB amazonDynamoDBConfig() {
+//		return AmazonDynamoDBClientBuilder.standard()
+//				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(awsDynamoDBEndPoint, awsRegion))
+//				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(awsAccessKey, awsSecretKey)))
+//				.build();
+//	}
 }
